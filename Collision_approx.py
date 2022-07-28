@@ -9,7 +9,7 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 from scipy.optimize import curve_fit
 import numba as nb
-from nu_e_coll import nu_e_collisions as ve
+import nu_e_collisions as ve
 from Constants import Gf, me
 
 # In[2]:
