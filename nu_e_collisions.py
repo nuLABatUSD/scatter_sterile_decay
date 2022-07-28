@@ -7,7 +7,7 @@
 import sympy as sym
 import numpy as np
 import numba as nb
-from Interpolate import interp as ip
+import interp as ip
 
 Weinberg = .4910015
 x_values, w_values = np.polynomial.laguerre.laggauss(50)
