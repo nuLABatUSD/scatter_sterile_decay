@@ -143,6 +143,7 @@ def energyandmomentum(mA,mB,mC,EA,theta): #theta is the angle at which the steri
     EC = (.5*EA) + (EA*(mC**2 - mB**2)/(2*mA**2)) + (pA*pCo*np.cos(theta+np.pi)/mA)
     return pxB,pxC,pzB,pzC,EB,EC
 
+@nb.jit(nopython=True)
 def energyB(mA,mB,mC): 
     E_B = (mA**2 + mB**2 - mC**2)/(2*mA)
     return E_B
@@ -163,21 +164,21 @@ def trapezoid(y_array,x_array):
     total = np.sum((x_array[1:]-x_array[:-1])*(y_array[1:]+y_array[:-1])/2)
     return total
 
-#@nb.jit(nopython=True)
+@nb.jit(nopython=True)
 def decay2(ms,angle):  #angle is the mixing angle of vs with active neutrinos
     numerator = 9*(co.Gf**2)*co.a_value*(ms**5)*((np.sin(angle))**2)
     denominator = 512*np.pi**4
     gamma = numerator/denominator
     return gamma
 
-#@nb.jit(nopython=True)
+@nb.jit(nopython=True)
 def decay5(ms,angle): #angle is the mixing angle of the sterile neutrino with the active neutrinos
     part1 = (co.Gf**2)*(co.f_pi**2)/(16*np.pi)
     part2 = ms*((ms**2)-(co.mpi_neutral**2))*(np.sin(angle))**2
     gamma = part1*part2
     return gamma
 
-#@nb.jit(nopython=True)
+@nb.jit(nopython=True)
 def decay6(ms,angle):
     part1 = (co.Gf**2)*(co.f_pi**2)/(16*np.pi)
     parentheses = ((ms**2) - (co.mpi_charged+co.me)**2)*((ms**2) - (co.mpi_charged-co.me)**2)
@@ -185,7 +186,7 @@ def decay6(ms,angle):
     gamma = part1*part2
     return 2*gamma #because vs can decay into either pi+ and e- OR pi- and e+
 
-#@nb.jit(nopython=True)
+@nb.jit(nopython=True)
 def decay7(ms,angle):
     part1 = (co.Gf**2)*(co.f_pi**2)/(16*np.pi)
     parentheses = ((ms**2) - (co.mpi_charged+co.mu)**2)*((ms**2) - (co.mpi_charged-co.mu)**2)
@@ -193,7 +194,7 @@ def decay7(ms,angle):
     gamma = part1*part2
     return 2*gamma #because vs can decay into either pi+ and u- OR pi- and u+
 
-#@nb.jit(nopython=True)
+@nb.jit(nopython=True)
 def tH(ms,angle):
     return 1/(decay2(ms,angle)+decay5(ms,angle)+decay6(ms,angle)+decay7(ms,angle))
 
@@ -204,7 +205,7 @@ def tH(ms,angle):
 #@nb.jit(nopython=True)
 
 
-
+@nb.jit(nopython=True)
 def find_breaks(f, E5_index=0, E2_index=0):
     if (len(np.where(f < f_TINY)[0]) > 0):
         k_0 = np.where(f < f_TINY)[0][0]
@@ -259,11 +260,12 @@ def nH(time,Tcm,tao,D): #number density of decaying particles
     part2 = Tcm**3*np.e**(-time/tao)
     return part1*part2
     
-#@nb.jit(nopython=True)
+@nb.jit(nopython=True)
 def C_ve(p_array, Tcm, T, f,A_model,n_model):
     C_array = p_array**n_model * (f - ca.f_eq(p_array, T, 0))
     return - A_model * ca.n_e(T) * co.Gf**2 * T**(2-n_model) * C_array
 
+@nb.jit(nopython=True)
 def Gammamua(a,b): #for both electron neutrinos and muon neutrinos for decay types III and IV
     if a>co.Enumax:
         return 0
@@ -282,6 +284,7 @@ def Gammamua(a,b): #for both electron neutrinos and muon neutrinos for decay typ
     Gam_mua = constant*integral
     return Gam_mua
 
+@nb.jit(nopython=True)
 def Gammamub(): #for both electron neutrinos and muon neutrinos for decay types III and IV 
     constant = 8*co.Gf*(co.mu**2)/(16*np.pi**3)
     part_a1 = 3*(co.me**4)*(co.mu**2)*np.log(abs(2*co.Enumax-co.mu))
@@ -295,7 +298,7 @@ def Gammamub(): #for both electron neutrinos and muon neutrinos for decay types 
     return Gam_mub
 
 
-
+@nb.jit(nopython=True)
 def u_integral(E_mumin,E_mumax,Eactive,ms,angle):
     Eu_array = ((E_mumax-E_mumin)/2)*eps_valuese + ((E_mumax+E_mumin)/2)
     integral = 0
@@ -307,7 +310,7 @@ def u_integral(E_mumin,E_mumax,Eactive,ms,angle):
         integral = integral + (w_valuese[i]*((E_mumax-E_mumin)/2)*(1/(2*gammau*vu))*Gam_mua)
     return integral
     
-#@nb.jit(nopython=True)
+@nb.jit(nopython=True)
 def f(a,y,p): #y is a vector with length 102 for now, y[-2] is temp and y[-1] is time, the rest are prob functions for now
     
     d_array = np.zeros(len(y))
@@ -421,6 +424,7 @@ def f(a,y,p): #y is a vector with length 102 for now, y[-2] is temp and y[-1] is
 # In[3]:
 
 
+@nb.jit(nopython=True)
 def set_inputs():
     aaa=np.load("test_derivatives.npz",allow_pickle=True)
     aaa.files
