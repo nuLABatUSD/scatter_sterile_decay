@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 #!/usr/bin/env python
@@ -142,8 +142,10 @@ def simple_spread_eps(y,eps_array):
         y_new[i] = y[i]
     for i in range(num_small_boxes, new_length):
         eps_arr[i] = eps_arr[num_small_boxes-1] + (i+1 - num_small_boxes) * new_boxsize
-        box_array=(y[num_small_boxes + 2*(i-num_small_boxes) + 1],y[num_small_boxes + 2*(i-num_small_boxes)])
-        y_new[i] = np.mean(box_array)
+        sec_trap_array=(y[num_small_boxes + 2*(i-num_small_boxes) + 1],y[num_small_boxes + 2*(i-num_small_boxes)])
+        first_trap_array=(y[num_small_boxes + 2*(i-num_small_boxes)],y[num_small_boxes + 2*(i-num_small_boxes)-1])
+        both_trap_array = (np.mean(first_trap_array),np.mean(sec_trap_array))
+        y_new[i] = np.mean(both_trap_array)
     return y_new, eps_arr
 
 def det_new_ics(a_i, T_i, f_SMALL, f_BUFFER, MIN_eps_BUFFER):
